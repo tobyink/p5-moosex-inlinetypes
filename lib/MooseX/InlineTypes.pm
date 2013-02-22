@@ -18,7 +18,6 @@ sub import
 		exports => [qw/ InlineTypes /],
 		groups  => {
 			default => [qw/ InlineTypes /],
-			global  => sub { __PACKAGE__->_alter_has(@_) },
 		},
 	};
 	
