@@ -21,7 +21,8 @@ sub import
 		},
 	};
 	
-	if (grep { !ref and /^-global$/ } @_) {
+	if (grep { !ref and /^-global$/ } @_)
+	{
 		@_ = grep { ref or !/^-global$/ } @_;
 		$_[0]->_alter_has(scalar caller);
 	}
@@ -286,7 +287,37 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=MooseX-InlineTypes>.
 
 =head1 SEE ALSO
 
-L<Moose>, L<MooseX::Types>, L<Moo>.
+L<Moose>, L<Moo>.
+
+=head2 Usage with MooseX::Types
+
+Here's the example from the SYNPOSIS rewritten using L<MooseX::Types>:
+
+   use v5.14;
+   
+   package Document {
+      use Moose;
+      use MooseX::InlineTypes -global;
+      use MooseX::Types qw( Str is_Str );
+      has heading => (
+         is      => "ro",
+         isa     => sub { is_Str($_) and length($_) < 64 },
+         coerce  => [
+            Str, sub { sprintf("%s...", substr($_, 0, 60)) },
+         ]
+      );
+   }
+
+Note that MooseX::Types exports C<< is_X >> functions for each type which
+can be useful inside the C<< isa >> coderefs.
+
+With coercion arrayrefs, beware the magic quoting power of the fat comma!
+
+=head1 HISTORY
+
+This was originally a patch for L<MooseX::AttributeShortcuts> until
+Matt S Trout (cpan:MSTROUT) convinced me to rewrite it independently
+of that.
 
 =head1 AUTHOR
 
