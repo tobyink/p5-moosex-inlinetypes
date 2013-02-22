@@ -83,9 +83,9 @@ use constant do
 		my $meta = shift;
 		my ($name, $options) = @_;
 		
-		if ($options->{associated_metaclass})
+		if ($options->{definition_context}{package})
 		{
-			$name = $options->{associated_metaclass}->name . "::$name";
+			$name = $options->{definition_context}{package} . "::$name";
 		}
 		
 		$options->{isa} = "Moose::Meta::TypeConstraint"->new(
@@ -135,9 +135,9 @@ use constant do
 		my $meta = shift;
 		my ($name, $options) = @_;
 		
-		if ($options->{associated_metaclass})
+		if ($options->{definition_context}{package})
 		{
-			$name = $options->{associated_metaclass}->name . "::$name";
+			$name = $options->{definition_context}{package} . "::$name";
 		}
 		
 		# Got an inline coercion, but no inline type constraint. Don't want
@@ -243,6 +243,9 @@ C<Int> coercion is never attempted, because C<Any> is tried first!
       Any     => sub { ... },
       Int     => sub { ... },
    ],
+
+Note that C<< coerce => CODEREF >> is really just a shorthand for
+C<< coerce => [ Item => CODEREF ] >>.
 
 Attributes declared with the MooseX::InlineTypes trait do still support the
 "normal" Moose C<isa> and C<coerce> options, though it should be noted that
