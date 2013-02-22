@@ -8,6 +8,7 @@
 	:homepage             <https://metacpan.org/release/MooseX-InlineTypes>;
 	:download-page        <https://metacpan.org/release/MooseX-InlineTypes>;
 	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-InlineTypes>;
+	:repository           [ a :HgRepository; :browse <https://bitbucket.org/tobyink/p5-moosex-inlinetypes> ];
 	:created              2013-02-22;
 	:license              <http://dev.perl.org/licenses/>;
 	:maintainer           cpan:TOBYINK;
