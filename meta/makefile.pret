@@ -3,7 +3,15 @@
 `MooseX-InlineTypes`
 	perl_version_from m`MooseX::InlineTypes`;
 	version_from      m`MooseX::InlineTypes`;
-	readme_from       m`MooseX::InlineTypes`;
-	test_requires     p`Test::More 0.61` ;
-	.
+	readme_from       m`MooseX::InlineTypes`;	
+	requires          p`Moose 2.00`;
+	requires          p`Scalar::Does 0.002`;
+	requires          p`Sub::Exporter 0`;
+	requires          p`Sub::Install 0`;
+	requires          p`namespace::clean 0`;
+	test_requires     p`Test::Fatal 0`;
+	test_requires     p`Test::Requires 0`;
+	recommends        p`Test::Warn 0`;
+	recommends        p`MooseX::Types::Moose 0`;
+.
 
