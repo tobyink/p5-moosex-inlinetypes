@@ -1,0 +1,9 @@
+# This file provides instructions for packaging.
+
+`MooseX-InlineTypes`
+	perl_version_from m`MooseX::InlineTypes`;
+	version_from      m`MooseX::InlineTypes`;
+	readme_from       m`MooseX::InlineTypes`;
+	test_requires     p`Test::More 0.61` ;
+	.
+

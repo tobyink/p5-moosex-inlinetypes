@@ -1,0 +1,18 @@
+# This file contains general metadata about the project.
+
+@prefix : <http://usefulinc.com/ns/doap#>.
+
+`MooseX-InlineTypes`
+	:programming-language "Perl" ;
+	:shortdesc            "declare type constraints and coercions inline with coderefs";
+	:homepage             <https://metacpan.org/release/MooseX-InlineTypes>;
+	:download-page        <https://metacpan.org/release/MooseX-InlineTypes>;
+	:bug-database         <http://rt.cpan.org/Dist/Display.html?Queue=MooseX-InlineTypes>;
+	:created              2013-02-22;
+	:license              <http://dev.perl.org/licenses/>;
+	:maintainer           cpan:TOBYINK;
+	:developer            cpan:TOBYINK.
+
+<http://dev.perl.org/licenses/>
+	dc:title  "the same terms as the perl 5 programming language system itself".
+
