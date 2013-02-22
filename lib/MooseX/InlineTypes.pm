@@ -8,12 +8,27 @@ our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.001';
 
 use Moose::Util::TypeConstraints ();
-use Sub::Exporter -setup => {
-	exports => [qw/ InlineTypes /],
-	groups  => {
-		default => [qw/ InlineTypes /],
-	},
-};
+use Sub::Exporter ();
+use Sub::Install qw( install_sub );
+
+my $EXPORT;
+sub import
+{
+	$EXPORT ||= Sub::Exporter::build_exporter {
+		exports => [qw/ InlineTypes /],
+		groups  => {
+			default => [qw/ InlineTypes /],
+			global  => sub { __PACKAGE__->_alter_has(@_) },
+		},
+	};
+	
+	if (grep { !ref and /^-global$/ } @_) {
+		@_ = grep { ref or !/^-global$/ } @_;
+		$_[0]->_alter_has(scalar caller);
+	}
+	
+	goto $EXPORT;
+}
 
 # Some mini helper subs
 # 
@@ -151,6 +166,27 @@ use constant do
 	
 	InlineTypes => __PACKAGE__;
 };
+
+sub _alter_has
+{
+	my ($class, $caller) = @_;
+	my $orig = $caller->can('has')
+		or Carp::croak("Cannot find 'has' function to mess with, stuck");
+	
+	# Prevent warning about "has" being redefined!
+	require namespace::clean;
+	namespace::clean->clean_subroutines($caller, 'has');
+	
+	install_sub {
+		into    => $caller,
+		as      => 'has',
+		code    => sub {
+			my ($name, %args) = @_;
+			push @{ $args{traits} ||= [] }, InlineTypes;
+			$orig->($name, %args);
+		},
+	};
+}
 
 1;
 
