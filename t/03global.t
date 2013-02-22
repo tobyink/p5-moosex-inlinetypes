@@ -64,11 +64,11 @@ use Test::Fatal;
 		traits  => [ 'Number' ],
 		is      => 'rw',
 		isa     => 'Num',
-		coerce  => {
+		coerce  => [
+			Any   => sub { no warnings; length("$_") },
 			Str   => sub { length("$_") },
 			Undef => sub { -1 },
-			Any   => sub { no warnings; length("$_") },
-		},
+		],
 	);
 	
 	has num5 => (

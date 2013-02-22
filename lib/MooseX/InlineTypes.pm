@@ -108,7 +108,7 @@ use constant do
 			my $idx;
 			@map = map { ($idx++%2) ? $WRAP->($_) : $_ } @$c;
 		}
-		elsif (does $c, HASH)
+		elsif (0 and does $c, HASH)  # commented out!
 		{
 			# sort is a fairly arbitrary order, but at least it's
 			# consistent. We prefer an ARRAY!
