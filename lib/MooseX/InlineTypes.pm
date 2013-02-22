@@ -52,9 +52,8 @@ use constant do
 		isa    => 'ArrayRef',
 	);
 	
-	around _process_options => sub
+	before _process_options => sub
 	{
-		my $orig = shift;
 		my $meta = shift;
 		my ($name, $options) = @_;
 		
@@ -69,8 +68,6 @@ use constant do
 			$meta->_process_coerce_array(@_);
 			$meta->_make_coerce(@_);
 		}
-		
-		return $meta->$orig(@_);
 	};
 	
 	sub _process_isa_code
@@ -174,6 +171,7 @@ sub _alter_has
 		or Carp::croak("Cannot find 'has' function to mess with, stuck");
 	
 	# Prevent warning about "has" being redefined!
+	# 
 	require namespace::clean;
 	namespace::clean->clean_subroutines($caller, 'has');
 	
@@ -198,7 +196,86 @@ MooseX::InlineTypes - declare type constraints and coercions inline with coderef
 
 =head1 SYNOPSIS
 
+   use v5.14;
+   
+   package Document {
+      use Moose;
+      use MooseX::InlineTypes;
+      has heading => (
+         traits  => [ InlineTypes ],
+         is      => "ro",
+         isa     => sub { !ref($_) and length($_) < 64 },
+         coerce  => sub { sprintf("%s...", substr($_, 0, 60)) },
+      );
+   }
+
 =head1 DESCRIPTION
+
+This module provides an attribute trait that allows you to declare L<Moose>
+type constraints and coercions inline using coderefs, a bit like L<Moo>,
+but not quite.
+
+=head2 C<< isa => CODEREF >>
+
+This is a coderef which returns true if the value passes the type constraint
+and false otherwise.
+
+=head2 C<< coerce => CODEREF >>
+
+This is a coderef which takes the uncoerced value and returns the coerced
+value.
+
+=head2 C<< coerce => ARRAYREF >>
+
+This allows you to specify several different coercions from different types:
+
+   isa    => "ArrayRef",
+   coerce => [
+      Str     => sub { split /\s+/, $_ },
+      HashRef => sub { sort values %$_ },
+      CodeRef => sub { my @r = $_->(); \@r },
+   ],
+
+The order of coercions is significant. For example, given the following the
+C<Int> coercion is never attempted, because C<Any> is tried first!
+
+   coerce => [
+      Any     => sub { ... },
+      Int     => sub { ... },
+   ],
+
+Attributes declared with the MooseX::InlineTypes trait do still support the
+"normal" Moose C<isa> and C<coerce> options, though it should be noted that
+C<< isa=>CODE, coerce=>1 >> makes no sense and Moose will give you a
+massive warning!
+
+=head1 EXPORT
+
+=over
+
+=item C<< InlineTypes >>
+
+This is an exported constant so that you can write:
+
+   traits  => [ InlineTypes ],
+
+Instead of the more long-winded:
+
+   traits  => [ "MooseX::InlineTypes::Trait::Attribute" ],
+
+=item C<< -global >>
+
+If you do this:
+
+   use MooseX::InlineTypes -global;
+
+Then the InlineTypes trait will be applied automatically to I<all> your
+attributes. (Actually only to those attributes declared using C<has>.
+Attributes added via Moose meta calls will be unaffected.)
+
+Don't worry; it's not really global. It's just for the caller.
+
+=back
 
 =head1 BUGS
 
@@ -207,17 +284,18 @@ L<http://rt.cpan.org/Dist/Display.html?Queue=MooseX-InlineTypes>.
 
 =head1 SEE ALSO
 
+L<Moose>, L<MooseX::Types>, L<Moo>.
+
 =head1 AUTHOR
 
 Toby Inkster E<lt>tobyink@cpan.orgE<gt>.
 
 =head1 COPYRIGHT AND LICENCE
 
-This software is copyright (c) 2013 by Toby Inkster.
+This software is copyright (c) 2012-2013 by Toby Inkster.
 
 This is free software; you can redistribute it and/or modify it under
 the same terms as the Perl 5 programming language system itself.
-
 
 =head1 DISCLAIMER OF WARRANTIES
 
