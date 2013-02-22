@@ -181,7 +181,7 @@ sub _alter_has
 		code    => sub {
 			my ($name, %args) = @_;
 			push @{ $args{traits} ||= [] }, InlineTypes;
-			$orig->($name, %args);
+			@_ = ($name, %args) and goto $orig;
 		},
 	};
 }
