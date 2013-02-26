@@ -95,7 +95,7 @@ is($o->short_string, 'Foo', 'attribute works');
 
 like(
 	exception { $o->short_string('Foolish') },
-	qr{^Attribute \(short_string\) does not pass the type constraint because: Validation failed for '__INLINE__\[TestClass1::short_string\]' with value "Foolish" at accessor TestClass1::short_string},
+	qr{^Attribute \(short_string\) does not pass the type constraint because: Validation failed for '__INLINE__\[TestClass1::short_string\]' with value "?Foolish"? at accessor TestClass1::short_string},
 	'value not meeting constraint dies',
 );
 
