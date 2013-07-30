@@ -5,7 +5,7 @@
 	version_from      m`MooseX::InlineTypes`;
 	readme_from       m`MooseX::InlineTypes`;	
 	requires          p`Moose 2.00`;
-	requires          p`Scalar::Does 0.002`;
+	requires          p`Types::TypeTiny`;
 	requires          p`Sub::Exporter 0`;
 	requires          p`Sub::Install 0`;
 	requires          p`namespace::clean 0`;

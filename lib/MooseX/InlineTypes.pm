@@ -40,7 +40,7 @@ use constant do
 	package MooseX::InlineTypes::Trait::Attribute;
 	
 	use Moose::Role;
-	use Scalar::Does -constants;
+	use Types::TypeTiny qw( CodeLike ArrayLike HashLike );
 	
 	has isa_code => (
 		is     => 'ro',
@@ -57,7 +57,7 @@ use constant do
 		my $meta = shift;
 		my ($name, $options) = @_;
 		
-		if (does $options->{isa}, CODE)
+		if (CodeLike->check( $options->{isa} ))
 		{
 			$meta->_process_isa_code(@_);
 			$meta->_make_isa(@_);
@@ -103,12 +103,12 @@ use constant do
 		my $c = delete $options->{coerce};
 		
 		my @map;
-		if (does $c, ARRAY)
+		if (ArrayLike->check($c))
 		{
 			my $idx;
 			@map = map { ($idx++%2) ? $WRAP->($_) : $_ } @$c;
 		}
-		elsif (0 and does $c, HASH)  # commented out!
+		elsif (0 and HashLike->check($c))  # commented out!
 		{
 			# sort is a fairly arbitrary order, but at least it's
 			# consistent. We prefer an ARRAY!
@@ -118,7 +118,7 @@ use constant do
 				push @map, $k => $WRAP->( $c->{$k} );
 			}
 		}
-		elsif (does $c, CODE)
+		elsif (CodeLike->check($c))
 		{
 			@map = (Item => $WRAP->($c));
 		}
