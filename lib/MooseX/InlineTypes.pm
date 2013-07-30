@@ -153,29 +153,30 @@ sub _exporter_validate_opts
 	my $class = shift;
 	my ($opts) = @_;
 	
-	$class->_alter_has($opts->{into}) if $opts->{global};
+	$class->_alter_has($opts) if $opts->{global};
 }
 
 sub _alter_has
 {
-	my ($class, $caller) = @_;
-	my $orig = $caller->can('has')
+	my ($class, $opts) = @_;
+	my $orig = !ref($opts->{into}) && $opts->{into}->can('has')
 		or Carp::croak("Cannot find 'has' function to mess with, stuck");
 	
 	# Prevent warning about "has" being redefined!
 	# 
 	require namespace::clean;
-	namespace::clean->clean_subroutines($caller, 'has');
+	namespace::clean->clean_subroutines($opts->{into}, 'has');
 	
-	install_sub {
-		into    => $caller,
-		as      => 'has',
-		code    => sub {
+	$class->_exporter_install_sub(
+		'has',
+		+{ },
+		$opts,
+		sub {
 			my ($name, %args) = @_;
 			push @{ $args{traits} ||= [] }, InlineTypes;
 			@_ = ($name, %args) and goto $orig;
 		},
-	};
+	);
 }
 
 1;

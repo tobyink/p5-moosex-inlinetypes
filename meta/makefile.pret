@@ -6,8 +6,7 @@
 	readme_from       m`MooseX::InlineTypes`;	
 	requires          p`Moose 2.00`;
 	requires          p`Types::TypeTiny`;
-	requires          p`Sub::Exporter 0`;
-	requires          p`Sub::Install 0`;
+	requires          p`Exporter::TypeTiny`;
 	requires          p`namespace::clean 0`;
 	test_requires     p`Test::Fatal 0`;
 	test_requires     p`Test::Requires 0`;
