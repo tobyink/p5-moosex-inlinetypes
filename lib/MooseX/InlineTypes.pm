@@ -162,11 +162,6 @@ sub _alter_has
 	my $orig = !ref($opts->{into}) && $opts->{into}->can('has')
 		or Carp::croak("Cannot find 'has' function to mess with, stuck");
 	
-	# Prevent warning about "has" being redefined!
-	# 
-	require namespace::clean;
-	namespace::clean->clean_subroutines($opts->{into}, 'has');
-	
 	$class->_exporter_install_sub(
 		'has',
 		+{ },

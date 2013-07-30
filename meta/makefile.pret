@@ -7,10 +7,8 @@
 	requires          p`Moose 2.00`;
 	requires          p`Types::TypeTiny`;
 	requires          p`Exporter::TypeTiny`;
-	requires          p`namespace::clean 0`;
 	test_requires     p`Test::Fatal 0`;
 	test_requires     p`Test::Requires 0`;
 	recommends        p`Test::Warn 0`;
-	recommends        p`MooseX::Types::Moose 0`;
 .
 
