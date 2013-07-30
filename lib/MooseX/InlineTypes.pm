@@ -159,7 +159,9 @@ sub _exporter_validate_opts
 sub _alter_has
 {
 	my ($class, $opts) = @_;
-	my $orig = !ref($opts->{into}) && $opts->{into}->can('has')
+	
+	my $into = $opts->{into};
+	my $orig = ref($into) eq q(HASH) ? $into->{has} : $into->can('has')
 		or Carp::croak("Cannot find 'has' function to mess with, stuck");
 	
 	$class->_exporter_install_sub(
