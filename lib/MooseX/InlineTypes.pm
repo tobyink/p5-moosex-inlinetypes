@@ -14,16 +14,6 @@ use Exporter::TypeTiny;
 our @ISA    = qw( Exporter::TypeTiny );
 our @EXPORT = qw( InlineTypes );
 
-sub import
-{
-	if (grep { !ref and /^-global$/ } @_)
-	{
-		@_ = grep { ref or !/^-global$/ } @_;
-		$_[0]->_alter_has(scalar caller);
-	}	
-	goto \&Exporter::TypeTiny::import;
-}
-
 # Some mini helper subs
 # 
 my $WRAP = sub{ my $sub = shift; sub { local $_ = $_[0]; $sub->(@_) } };
@@ -157,6 +147,14 @@ use constant do
 	
 	InlineTypes => __PACKAGE__;
 };
+
+sub _exporter_validate_opts
+{
+	my $class = shift;
+	my ($opts) = @_;
+	
+	$class->_alter_has($opts->{into}) if $opts->{global};
+}
 
 sub _alter_has
 {
