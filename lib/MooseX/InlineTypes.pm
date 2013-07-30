@@ -8,26 +8,20 @@ our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.002';
 
 use Moose::Util::TypeConstraints ();
-use Sub::Exporter ();
 use Sub::Install qw( install_sub );
 
-my $EXPORT;
+use Exporter::TypeTiny;
+our @ISA    = qw( Exporter::TypeTiny );
+our @EXPORT = qw( InlineTypes );
+
 sub import
 {
-	$EXPORT ||= Sub::Exporter::build_exporter {
-		exports => [qw/ InlineTypes /],
-		groups  => {
-			default => [qw/ InlineTypes /],
-		},
-	};
-	
 	if (grep { !ref and /^-global$/ } @_)
 	{
 		@_ = grep { ref or !/^-global$/ } @_;
 		$_[0]->_alter_has(scalar caller);
-	}
-	
-	goto $EXPORT;
+	}	
+	goto \&Exporter::TypeTiny::import;
 }
 
 # Some mini helper subs
