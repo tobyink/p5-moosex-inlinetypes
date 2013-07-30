@@ -7,7 +7,6 @@ use warnings;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.002';
 
-use Moose::Util::TypeConstraints ();
 use Sub::Install qw( install_sub );
 
 use Exporter::TypeTiny;
@@ -24,16 +23,18 @@ use constant do
 	package MooseX::InlineTypes::Trait::Attribute;
 	
 	use Moose::Role;
+	use Type::Tiny 0.021;  # 0.021_03 to be exact
+	use Types::Standard qw( CodeRef ArrayRef Item );
 	use Types::TypeTiny qw( CodeLike ArrayLike HashLike );
 	
 	has isa_code => (
 		is     => 'ro',
-		isa    => 'CodeRef',
+		isa    => CodeRef,
 	);
 	
 	has coerce_array => (
 		is     => 'ro',
-		isa    => 'ArrayRef',
+		isa    => ArrayRef,
 	);
 	
 	before _process_options => sub
@@ -72,10 +73,10 @@ use constant do
 			$name = $options->{definition_context}{package} . "::$name";
 		}
 		
-		$options->{isa} = "Moose::Meta::TypeConstraint"->new(
-			name       => "__INLINE__[$name]",
-			parent     => $FTC->("Item"),
-			constraint => $WRAP->( $options->{isa_code} ),
+		$options->{isa} = 'Type::Tiny'->new(
+			display_name => "__INLINE__[$name]",
+			parent       => Item,
+			constraint   => $options->{isa_code},
 		);
 	}
 	
@@ -90,7 +91,7 @@ use constant do
 		if (ArrayLike->check($c))
 		{
 			my $idx;
-			@map = map { ($idx++%2) ? $WRAP->($_) : $_ } @$c;
+			@map = map { ($idx++%2) ? $_ : $FTC->($_) } @$c;
 		}
 		elsif (0 and HashLike->check($c))  # commented out!
 		{
@@ -99,12 +100,12 @@ use constant do
 			# 
 			for my $k (sort keys %$c)
 			{
-				push @map, $k => $WRAP->( $c->{$k} );
+				push @map, $FTC->($k) => $c->{$k};
 			}
 		}
 		elsif (CodeLike->check($c))
 		{
-			@map = (Item => $WRAP->($c));
+			@map = (Item, $c);
 		}
 		else
 		{
@@ -130,18 +131,14 @@ use constant do
 		# 
 		if (not $options->{isa_code})
 		{
-			my $orig = $FTC->($options->{isa} || 'Item');
-			$options->{isa} = Moose::Meta::TypeConstraint->new(
-				name   => "__INLINE__[$name]",
-				parent => $orig,
+			my $orig = $options->{isa} ? $FTC->($options->{isa}) : Item;
+			$options->{isa} = 'Type::Tiny'->new(
+				display_name => "__INLINE__[$name]",
+				parent       => $orig,
 			);
 		}
 		
-		my $coercions = "Moose::Meta::TypeCoercion"->new(
-			type_constraint => $options->{isa},
-		);
-		$coercions->add_type_coercions(@{$options->{coerce_array}});
-		$options->{isa}->coercion($coercions);
+		$options->{isa}->coercion->add_type_coercions( @{$options->{coerce_array}} );
 		$options->{coerce} = 1;
 	}
 	

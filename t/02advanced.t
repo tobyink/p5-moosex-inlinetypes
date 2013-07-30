@@ -100,7 +100,7 @@ is($o->short_string, 'Foo', 'attribute works');
 
 like(
 	exception { $o->short_string('Foolish') },
-	qr{^Attribute \(short_string\) does not pass the type constraint because: Validation failed for '__INLINE__\[TestClass1::short_string\]' with value "?Foolish"? at accessor TestClass1::short_string},
+	qr{^Attribute \(short_string\) does not pass the type constraint},
 	'value not meeting constraint dies',
 );
 
@@ -149,7 +149,7 @@ is($o->num5, -1, 'attribute with arrayref coercions and MooseX::Types - from Und
 			isa     => sub { length($_) <= 5 },
 			coerce  => 1,
 		)
-	} qr{^You cannot coerce an attribute \(short_string\) unless its type \(__INLINE__\[TestClass2::short_string\]\) has a coercion};
+	} qr{^You cannot coerce an attribute \(short_string\)};
 };
 
 done_testing();
