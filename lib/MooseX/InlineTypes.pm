@@ -7,8 +7,6 @@ use warnings;
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.002';
 
-use Sub::Install qw( install_sub );
-
 use Exporter::TypeTiny;
 our @ISA    = qw( Exporter::TypeTiny );
 our @EXPORT = qw( InlineTypes );
