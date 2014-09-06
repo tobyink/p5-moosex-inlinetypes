@@ -7,6 +7,7 @@
 	requires          p`Moose 2.00`;
 	requires          p`Type::Tiny 1.000000`;
 	requires          p`Exporter::Tiny 0.030`;`
+	requires          p`MooseX::ErsatzMethod 0`;
 	test_requires     p`Test::Fatal 0`;
 	test_requires     p`Test::Requires 0`;
 .

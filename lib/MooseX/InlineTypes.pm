@@ -21,6 +21,8 @@ use constant do
 	package MooseX::InlineTypes::Trait::Attribute;
 	
 	use Moose::Role;
+	use MooseX::ErsatzMethod;
+	
 	use Type::Tiny 0.021;  # 0.021_03 to be exact
 	use Types::Standard qw( CodeRef ArrayRef Item );
 	use Types::TypeTiny qw( CodeLike ArrayLike HashLike );
@@ -51,6 +53,28 @@ use constant do
 			$meta->_process_coerce_array(@_);
 			$meta->_make_coerce(@_);
 		}
+	};
+	
+	# OK, this is insane, but unfortunately necessary!
+	# Moose native attribute has this _check_type method
+	# which checks:
+	#
+	# $options->{isa}->is_a_type_of($meta->_helper_type)
+	# 
+	# However, $meta->_helper_type returns a stringy type
+	# constraint. If $options->{isa} is a Type::Tiny object,
+	# it will return false for is_a_type_of($stringy).
+	# 
+	# So here we promote _helper_type to a type constraint
+	# object. But we also need to ensure that there is a
+	# _helper_type method at all, because otherwise `around`
+	# will fail at role composition time!
+	#
+	ersatz _helper_type => sub { +() };
+	around _helper_type => sub
+	{
+		my $type = shift->(@_);
+		ref($type) ? $type : defined($type) ? $FTC->($type) : ();
 	};
 	
 	sub _process_isa_code
@@ -156,7 +180,7 @@ sub _alter_has
 	my ($class, $opts) = @_;
 	
 	my $into = $opts->{into};
-	my $orig = ref($into) eq q(HASH) ? $into->{has} : $into->can('has')
+	my $next = ref($into) eq q(HASH) ? $into->{has} : $into->can('has')
 		or Carp::croak("Cannot find 'has' function to mess with, stuck");
 	
 	$class->_exporter_install_sub(
@@ -166,7 +190,7 @@ sub _alter_has
 		sub {
 			my ($name, %args) = @_;
 			push @{ $args{traits} ||= [] }, InlineTypes;
-			@_ = ($name, %args) and goto $orig;
+			@_ = ($name, %args) and goto $next;
 		},
 	);
 }
