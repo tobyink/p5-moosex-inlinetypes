@@ -1,14 +1,12 @@
 # This file provides instructions for packaging.
 
-`MooseX-InlineTypes`
-	perl_version_from m`MooseX::InlineTypes`;
-	version_from      m`MooseX::InlineTypes`;
-	readme_from       m`MooseX::InlineTypes`;	
-	requires          p`Moose 2.00`;
-	requires          p`Type::Tiny 1.000000`;
-	requires          p`Exporter::Tiny 0.030`;`
-	requires          p`MooseX::ErsatzMethod 0`;
-	test_requires     p`Test::Fatal 0`;
-	test_requires     p`Test::Requires 0`;
-.
+@prefix : <http://ontologi.es/doap-deps#> .
 
+`MooseX-InlineTypes`
+	:runtime-requirement [ :on "Moose 2.00"^^:CpanId ];
+	:runtime-requirement [ :on "Type::Tiny 1.000000"^^:CpanId ];
+	:runtime-requirement [ :on "Exporter::Tiny 0.030"^^:CpanId ];
+	:runtime-requirement [ :on "MooseX::ErsatzMethod"^^:CpanId ];
+	:test-requirement    [ :on "Test::More 0.96"^^:CpanId ];
+	:test-requirement    [ :on "Test::Fatal"^^:CpanId ];
+	:test-requirement    [ :on "Test::Requires"^^:CpanId ].
