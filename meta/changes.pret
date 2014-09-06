@@ -10,3 +10,12 @@
 		item "Regexps in test cases were too strict matching exception texts - failed on some versions of Moose."^^Bugfix;
 	].
 
+`MooseX-InlineTypes 0.003 cpan:TOBYINK`
+	issued  2014-09-06;
+	changeset [
+		item "Instead of Sub::Install + Sub::Exporter + namespace::clean faff, just use Exporter::Tiny."^^Update;
+		item "Delegate most type munging stuff to Type::Tiny."^^Update;
+		item "use Dist::Inkt."^^Packaging;
+		item "Adjust tests to pass on newer releases of Moose."^^Tests;
+		item "Use MooseX::ErsatzMethod to make Moose::Meta::Attribute::Native::Trait happy."^^Bugfix;
+	].
