@@ -186,6 +186,7 @@ MooseX::InlineTypes - declare type constraints and coercions inline with coderef
    package Document {
       use Moose;
       use MooseX::InlineTypes;
+      
       has heading => (
          traits  => [ InlineTypes ],
          is      => "ro",
