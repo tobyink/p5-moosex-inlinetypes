@@ -1,7 +1,6 @@
 =head1 PURPOSE
 
-Test interaction with L<MooseX::Types>, and expected warning message
-on C<< isa => CODE, coerce => 1 >>.
+Test interaction with L<MooseX::Types>.
 
 =head1 AUTHOR
 
@@ -19,10 +18,9 @@ the same terms as the Perl 5 programming language system itself.
 use strict;
 use warnings;
 use Test::More;
-use Test::Requires qw/ Test::Warn MooseX::Types::Moose /;
+use Test::Requires qw/ MooseX::Types::Moose /;
 
 use Test::Fatal;
-use Test::Warn;
 
 {
 	package TestClass1;
@@ -135,21 +133,5 @@ is($o->num5, 7, 'attribute with arrayref coercions and MooseX::Types - from Str'
 
 $o->num5(undef);
 is($o->num5, -1, 'attribute with arrayref coercions and MooseX::Types - from Undef');
-
-{
-	package TestClass2;
-	
-	use Moose;
-	use MooseX::InlineTypes;
-	
-	::warning_like {
-		has short_string => (
-			traits  => [ InlineTypes ],
-			is      => 'rw',
-			isa     => sub { length($_) <= 5 },
-			coerce  => 1,
-		)
-	} qr{^You cannot coerce an attribute \(short_string\)};
-};
 
 done_testing();
