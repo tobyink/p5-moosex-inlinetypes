@@ -1,14 +1,14 @@
-package MooseX::InlineTypes;
-
 use 5.008;
 use strict;
 use warnings;
 
+package MooseX::InlineTypes;
+
 our $AUTHORITY = 'cpan:TOBYINK';
 our $VERSION   = '0.002';
 
-use Exporter::TypeTiny;
-our @ISA    = qw( Exporter::TypeTiny );
+use Exporter::Tiny;
+our @ISA    = qw( Exporter::Tiny );
 our @EXPORT = qw( InlineTypes );
 
 # Some mini helper subs
@@ -161,7 +161,7 @@ sub _alter_has
 	
 	$class->_exporter_install_sub(
 		'has',
-		+{ },
+		+{ -replace => 1 },
 		$opts,
 		sub {
 			my ($name, %args) = @_;

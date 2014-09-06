@@ -5,9 +5,9 @@
 	version_from      m`MooseX::InlineTypes`;
 	readme_from       m`MooseX::InlineTypes`;	
 	requires          p`Moose 2.00`;
-	requires          p`Type::Tiny 0.021`;
+	requires          p`Type::Tiny 1.000000`;
+	requires          p`Exporter::Tiny 0.030`;`
 	test_requires     p`Test::Fatal 0`;
 	test_requires     p`Test::Requires 0`;
-	recommends        p`Test::Warn 0`;
 .
 
